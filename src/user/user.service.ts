@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MongoService } from '../database/mongo.service';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto, ThemePreferenceTypes } from './user.dto';
+import { ThemePreferenceTypes } from './user.dto';
 import * as moment from 'moment';
 import * as crypto from "crypto";
 

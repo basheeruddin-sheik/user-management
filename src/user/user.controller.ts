@@ -18,23 +18,17 @@ export class UserController {
                 throw new HttpException("Username already exists", HttpStatus.BAD_REQUEST);
             }
             const result = await this.userService.createUser(userInfo);
+
             return {
                 message: 'User created successfully',
                 statusCode: HttpStatus.CREATED,
                 data: result
             }
         } catch (error) {
-            console.log('Error while checking username availability', error);
             if (error?.status === HttpStatus.BAD_REQUEST) {
-                throw new HttpException({
-                    message: error.response,
-                    statusCode: HttpStatus.BAD_REQUEST,
-                }, HttpStatus.BAD_REQUEST)
+                throw new HttpException({message: error.response, statusCode: HttpStatus.BAD_REQUEST}, HttpStatus.BAD_REQUEST)
             }
-            throw new HttpException({
-                message: 'Error while creating user',
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR
-            }, HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException({message: 'Error while creating user', statusCode: HttpStatus.INTERNAL_SERVER_ERROR }, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -55,17 +49,10 @@ export class UserController {
                 data: user
             }
         } catch (error) {
-            console.log('Error while getting user details', error);
             if (error?.status === HttpStatus.NOT_FOUND) {
-                throw new HttpException({
-                    message: error.response,
-                    statusCode: HttpStatus.NOT_FOUND,
-                }, HttpStatus.NOT_FOUND)
+                throw new HttpException({message: error.response, statusCode: HttpStatus.NOT_FOUND}, HttpStatus.NOT_FOUND)
             }
-            throw new HttpException({
-                message: 'Error while creating user',
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR
-            }, HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException({message: 'Error while Getting user', statusCode: HttpStatus.INTERNAL_SERVER_ERROR}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -93,17 +80,10 @@ export class UserController {
                 data: result
             }
         } catch (error) {
-            console.log('Error while updating user details', error);
             if ([HttpStatus.NOT_FOUND, HttpStatus.UNAUTHORIZED].includes(error?.status)) {
-                throw new HttpException({
-                    message: error.response,
-                    statusCode: error.status,
-                }, error.status,)
+                throw new HttpException({message: error.response, statusCode: error.status}, error.status,)
             }
-            throw new HttpException({
-                message: 'Error while creating user',
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR
-            }, HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException({message: 'Error while updating user', statusCode: HttpStatus.INTERNAL_SERVER_ERROR}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -129,17 +109,10 @@ export class UserController {
                 statusCode: HttpStatus.OK
             }
         } catch (error) {
-            console.log('Error while updating user details', error);
             if ([HttpStatus.NOT_FOUND, HttpStatus.UNAUTHORIZED].includes(error?.status)) {
-                throw new HttpException({
-                    message: error.response,
-                    statusCode: error.status,
-                }, error.status,)
+                throw new HttpException({message: error.response, statusCode: error.status, }, error.status,)
             }
-            throw new HttpException({
-                message: 'Error while creating user',
-                statusCode: HttpStatus.INTERNAL_SERVER_ERROR
-            }, HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new HttpException({message: 'Error while deleting user', statusCode: HttpStatus.INTERNAL_SERVER_ERROR}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 }
