@@ -58,8 +58,24 @@ export const createUserSchema = z
         return birthYear >= maxAllowedYear;
       }, {
         message: 'Date of birth must be within the last 120 years.',
+      }),
+
+    password: z.string()
+      .refine((password) => password.length >= 8, {
+        message: 'Password must be at least 8 characters long',
       })
-  })
-  // .required();
+      .refine((password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).*$/;
+        return regex.test(password);
+      }, {
+        message: 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character(!@#$%^&*)',
+      }),
+
+    preferredLanguages: z.array(z.string()).optional(),
+
+    passwordLastUpdated: z.number().optional(),
+
+    themePreference: z.enum(['dark', 'light']).optional(),
+  });
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Post, UsePipes } from '@nestjs/common';
 import { UserPipe } from './pipes/user.pipe';
 import { CreateUserDto, createUserSchema } from './user.dto';
 import { UserService } from './user.service';
@@ -39,9 +39,12 @@ export class UserController {
     }
 
     @Get("get/id/:id")
-    async getUser(@Param("id") id: string) {
+    async getUser(
+        @Headers("metainfo") metaInfo: any,
+        @Param("id") id: string
+    ) {
         try {
-            const user = await this.userService.getUserById(id);
+            const user = await this.userService.getUserById(id, metaInfo);
             if (!user) {
                 throw new HttpException("User not found", HttpStatus.NOT_FOUND);
             }
@@ -66,5 +69,3 @@ export class UserController {
         }
     }
 }
-
-// @Headers("metainfo") metaInfo: MedeAuthMetaInfo,
