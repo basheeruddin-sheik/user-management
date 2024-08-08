@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserController } from './user/user.controller';
@@ -9,6 +9,7 @@ import { MongoService } from './database/mongo.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './auth/auth.middleware';
+import path from 'path';
 
 @Module({
   imports: [],
@@ -28,6 +29,9 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
         .apply(AuthMiddleware)
+        .exclude(
+          {path: "users/create", method: RequestMethod.POST},
+        )
         .forRoutes(
             UserController,
             BlockController
