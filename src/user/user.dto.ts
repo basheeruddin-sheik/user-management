@@ -35,9 +35,9 @@ export const createUserSchema = z
         message: 'Username must be between 3 to 20 characters',
       })
       .refine((username) => {
-        return username.match(/^[A-Za-z0-9]+$/);
+        return username.match(/^[A-Za-z0-9@#_.]+$/);
       }, {
-        message: 'Username should only contain letters and numbers',
+        message: 'Username should only contain letters, numbers, and allowed special characters(@#_.)',
       }),
 
     birthdate: z.string().datetime()

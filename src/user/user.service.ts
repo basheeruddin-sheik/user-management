@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MongoService } from '../app-commons/mongo.service';
+import { MongoService } from '../database/mongo.service';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './user.dto';
 
@@ -12,6 +12,10 @@ export class UserService {
 
     async getUserByUsername(username: string) {
         return this.mongoService.getUsersCollection().findOne({ username }, { projection: { _id: 0, username: 1 } });
+    }
+
+    async getUserById(id: string) {
+        return this.mongoService.getUsersCollection().findOne({ id }, { projection: { _id: 0 } });
     }
 
     async createUser(userInfo: CreateUserDto) {

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, HttpStatus, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, UsePipes } from '@nestjs/common';
 import { UserPipe } from './pipes/user.pipe';
 import { CreateUserDto, createUserSchema } from './user.dto';
 import { UserService } from './user.service';
@@ -37,4 +37,34 @@ export class UserController {
             }, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
+
+    @Get("get/id/:id")
+    async getUser(@Param("id") id: string) {
+        try {
+            const user = await this.userService.getUserById(id);
+            if (!user) {
+                throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            return {
+                message: 'User Details',
+                statusCode: HttpStatus.OK,
+                data: user
+            }
+        } catch (error) {
+            console.log('Error while getting user details', error);
+            if (error?.status === HttpStatus.NOT_FOUND) {
+                throw new HttpException({
+                    message: error.response,
+                    statusCode: HttpStatus.NOT_FOUND,
+                }, HttpStatus.NOT_FOUND)
+            }
+            throw new HttpException({
+                message: 'Error while creating user',
+                statusCode: HttpStatus.INTERNAL_SERVER_ERROR
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
 }
+
+// @Headers("metainfo") metaInfo: MedeAuthMetaInfo,
