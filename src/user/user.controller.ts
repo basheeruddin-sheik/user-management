@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, UsePipes } from '@nestjs/common';
-import { UserPipe } from './pipes/user.pipe';
-import { CreateUserDto, createUserSchema, UpdateUserDto, updateUserSchema } from './user.dto';
+import { UserPipe } from '../pipes/user.pipe';
+import { CreateUserDto, createUserSchema, UpdateUserDto, updateUserSchema } from '../dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
