@@ -43,6 +43,7 @@ export class UserService {
         userInfo.passwordLastUpdated = moment().unix();
         userInfo.birthdate = moment(userInfo.birthdate).unix();
         userInfo.themePreference = userInfo.themePreference || ThemePreferenceTypes.LIGHT;
+        userInfo.metaInfo = {createdAt: moment().unix()};
 
         await this.mongoService.getUsersCollection().insertOne(userInfo);
         return userInfo;
@@ -54,12 +55,13 @@ export class UserService {
             userInfo.password = crypto.createHash('sha256').update(userInfo.password).digest('hex');
             userInfo.passwordLastUpdated = moment().unix();
         }
+        userInfo['metaInfo.updatedAt'] = moment().unix();
 
         await this.mongoService.getUsersCollection().updateOne({ id, isDeleted: {$ne: true}  }, { $set: userInfo });
         return userInfo;
     }
 
     async deleteUserById(id: string) {
-        return await this.mongoService.getUsersCollection().updateOne({ id, isDeleted: {$ne: true}  }, { $set: { isDeleted: true } });
+        return await this.mongoService.getUsersCollection().updateOne({ id, isDeleted: {$ne: true}  }, { $set: { isDeleted: true, "metaInfo.deletedAt": moment().unix() } });
     }
 }

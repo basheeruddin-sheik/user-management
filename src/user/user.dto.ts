@@ -79,6 +79,14 @@ export const createUserSchema = z
     preferredLanguages: z.array(z.string()).optional(),
 
     themePreference: z.enum(['dark', 'light']).optional(),
+
+    metaInfo: z.object({
+      createdAt: z.number().optional(),
+      updatedAt: z.number().optional(),
+      deletedAt: z.number().optional(),
+    }).optional(),
+
+    isDeleted: z.boolean().default(false).optional(),
   });
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;
@@ -159,13 +167,12 @@ export const updateUserSchema = z
     themePreference: z.enum([ThemePreferenceTypes.DARK, ThemePreferenceTypes.LIGHT]).default(ThemePreferenceTypes.LIGHT).optional(),
 
     metaInfo: z.object({
-      createdBy: z.string().uuid(),
-      createdAt: z.number(),
-      updatedBy: z.string().uuid(),
-      updatedAt: z.number(),
+      createdAt: z.number().optional(),
+      updatedAt: z.number().optional(),
+      deletedAt: z.number().optional(),
     }).optional(),
 
-    isDeleted: z.boolean().default(true).optional(),
+    isDeleted: z.boolean().default(false).optional(),
   });
 
 export type UpdateUserDto = z.infer<typeof updateUserSchema>;
