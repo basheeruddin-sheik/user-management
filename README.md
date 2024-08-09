@@ -25,7 +25,7 @@ This NestJS microservice provides a set of APIs for managing users, including CR
 ## Installation
 1. Clone this repository:
    ```
-   git clone <git_repository_url>
+   git clone https://github.com/basheeruddin-sheik/user-management.git
    ```
 2. Install dependencies:
     ```
