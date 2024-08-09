@@ -9,7 +9,6 @@ import { MongoService } from './database/mongo.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './auth/auth.middleware';
-import path from 'path';
 
 @Module({
   imports: [],

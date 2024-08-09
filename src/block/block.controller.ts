@@ -1,6 +1,6 @@
 import { Controller, Headers, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { BlockService } from './block.service';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 
 @Controller('users')
 export class BlockController {

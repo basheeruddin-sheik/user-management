@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Para
 import { UserPipe } from '../pipes/user.pipe';
 import { CreateUserDto, createUserSchema, UpdateUserDto, updateUserSchema } from '../dto/user.dto';
 import { UserService } from './user.service';
-import { BlockService } from 'src/block/block.service';
+import { BlockService } from '../block/block.service';
 
 @Controller('users')
 export class UserController {

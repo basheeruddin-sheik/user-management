@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MongoService } from 'src/database/mongo.service';
+import { MongoService } from '../database/mongo.service';
 import * as moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 
