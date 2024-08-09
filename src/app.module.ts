@@ -22,13 +22,15 @@ import { CacheModule } from '@nestjs/cache-manager';
     AppController, 
     UserController, 
     BlockController, 
-    AuthController],
+    AuthController
+  ],
   providers: [
     AppService, 
     UserService, 
     BlockService, 
     MongoService, 
-    AuthService],
+    AuthService
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

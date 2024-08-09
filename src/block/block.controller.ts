@@ -37,7 +37,6 @@ export class BlockController {
                 statusCode: HttpStatus.OK,
             }
         } catch (error) {
-            console.log(error)
             if ([HttpStatus.NOT_FOUND, HttpStatus.UNAUTHORIZED].includes(error?.status)) {
                 throw new HttpException({message: error.response, statusCode: error.status}, error.status)
             }
