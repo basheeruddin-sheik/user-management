@@ -53,7 +53,7 @@ This NestJS microservice provides a set of APIs for managing users, including CR
 
 ### Note: 
 * Refere ```Swagger API Documention``` at route: ```{{domain}}/api```
-* Download Postman Collection URL: [Postman Collection](https://google.com)
+* Download Postman Collection URL: [Postman Collection](https://bit.ly/4dbT8ce)
 
 ## Implementation
 #### 1. Authentication & Authorization
