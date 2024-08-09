@@ -15,17 +15,33 @@ export class MongoService {
 
             console.log(`Successfully connected to DB.`);
 
-            // TODO: need to create indexes for the collections
+            await this.createIndexes();
         } catch (e) {
             console.log('Error ', e);
         }
     }
-    
+
     getUsersCollection(): Collection {
         return this.userManagementDb.collection(this.USERS_COLLECTION_NAME);
     }
 
     getBlockedUsersCollection(): Collection {
         return this.userManagementDb.collection(this.BLOCKED_USERS_COLLECTION_NAME);
+    }
+
+    async createIndexes() {
+        try {
+            await Promise.all([
+                this.getUsersCollection().createIndex({ username: "text" }, { unique: true }),
+                this.getUsersCollection().createIndex({ id: 1 }, { unique: true }),
+                this.getUsersCollection().createIndex({ birthdate: 1 }),
+
+                this.getBlockedUsersCollection().createIndex({ blockedUserId: 1}),
+                this.getBlockedUsersCollection().createIndex({ blockedByUserId: 1})
+            ]);
+        } catch (err) {
+            console.log(`Error creating mongo indexes`, err);
+        }
+
     }
 }

@@ -64,4 +64,27 @@ export class UserService {
     async deleteUserById(id: string) {
         return await this.mongoService.getUsersCollection().updateOne({ id, isDeleted: {$ne: true}  }, { $set: { isDeleted: true, "metaInfo.deletedAt": moment().unix() } });
     }
+
+    async searchUsers(username: string, minAge: number, maxAge: number, id: string) {
+        let query: any = { isDeleted: {$ne: true}, id: { $ne: id } };
+        if (username) {
+            query.username = new RegExp(username, "i");
+        }
+
+        if(minAge && maxAge) {
+            query.birthdate = { 
+                $lte: moment().subtract(minAge, 'years').unix(), 
+                $gte: moment().subtract(maxAge, 'years').unix()
+            };
+        }
+        else if (minAge) {
+            query.birthdate = { $lte: moment().subtract(minAge, 'years').unix() };
+        }
+        else if (maxAge) {
+            query.birthdate = { $gte: moment().subtract(maxAge, 'years').unix() };
+        }
+
+        console.log(query);
+        return this.mongoService.getUsersCollection().find(query, { projection: { _id: 0, id: 1, name: 1, surname: 1, username: 1, birthdate: 1 } }).limit(15).toArray();
+    }
 }
