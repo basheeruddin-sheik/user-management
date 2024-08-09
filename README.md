@@ -83,3 +83,20 @@ This NestJS microservice provides a set of APIs for managing users, including CR
     * ```isDeleted - Boolean``` To indicate account is deleted or not(For soft delete)
 
 #### 4. Mongo Collections
+* ```users``` - Fields mentioned at Data Model section
+* ```blocked-users```
+    * ```id - UUID``` Unique ID for document(not mandatory)
+    * ```blockedByUserId - UUID```  ID of the user who initiated the block
+    * ```blockedUserId - UUID``` ID of the Blocked User
+    * ```blockedUserName - String``` Name of the Blocked User
+    * ```blockedUserSurname - String``` Surname of the Blocked User
+    * ```blockedUserUsername - String``` Username of the Blocked User
+    * ```blockedAt - Number(Epoch)``` 
+
+    #### Note: 
+    * ##### There are two ways to keep track of blocked users:
+        1. Store blocked user IDs directly within each user's document: This means each user has a list of IDs of users they've blocked. However, if a user blocks many people, this list can become very long, making the user document too large.
+        2. Create a separate collection for blocked user relationships: Here, each document stores information about two users: the blocker and the blocked user. This approach is better for handling a large number of blocked users as it prevents individual user documents from becoming too big.
+        
+    * I chose the second method because it can handle a large number of blocked users without causing performance issues.
+    * Retrieving blocked user information by directly referencing user IDs in the ```users``` collection would necessitate multiple database ```aggregation lookups```, potentially impacting performance.
