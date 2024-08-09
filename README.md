@@ -100,3 +100,13 @@ This NestJS microservice provides a set of APIs for managing users, including CR
         
     * I chose the second method because it can handle a large number of blocked users without causing performance issues.
     * Retrieving blocked user information by directly referencing user IDs in the ```users``` collection would necessitate multiple database ```aggregation lookups```, potentially impacting performance.
+
+#### 5. Caching
+* In-memory caching was selected due to its immediate accessibility and reduced setup overhead compared to alternatives like Redis or file-based caching.
+* Implemented an Data Caching strategy within the NestJS framework, configuring a 5-second expiration time and a maximum cache capacity of 1000 items.
+
+#### 6. Error Handling
+* Implemented a robust error handling mechanism using try-catch blocks to gracefully manage unexpected exceptions and prevent application crashes.
+
+#### 7. Testing
+* Comprehensive Jest test cases were written to ensure the correct behavior of all controller functions, verifying expected outputs and error handling scenarios.
