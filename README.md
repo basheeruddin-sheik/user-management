@@ -31,7 +31,11 @@ This NestJS microservice provides a set of APIs for managing users, including CR
     ```
     npm install
     ```
-3. Run Service
+3. Create .env file in root directory and run below bash command
+    ```
+    cp .env.example .env
+    ```
+4. Run Service
     ```
     npm run start:dev
     ```
