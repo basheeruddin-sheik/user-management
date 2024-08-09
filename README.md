@@ -29,6 +29,7 @@ This NestJS microservice provides a set of APIs for managing users, including CR
    ```
 2. Install dependencies:
     ```
+    cd user-management
     npm install
     ```
 3. Create .env file in root directory and run below bash command
