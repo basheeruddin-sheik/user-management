@@ -10,26 +10,31 @@ export class BlockController {
         private userService: UserService
     ) { }
 
+    // API to block user
     @Post("block/id/:id")
     async blockUser(
         @Headers("metaInfo") metaInfo: any,
         @Param("id") blockUserId: string
     ) {
         try {
+            // Check if user is trying to block self
             if(blockUserId === metaInfo.id) {
                 throw new HttpException("Cannot block self", HttpStatus.UNAUTHORIZED)
             }
 
+            // Check if user is already blocked
             const blockedUser = await this.blockService.getBlockedUserById(blockUserId, metaInfo.id);
             if (blockedUser) {
                 throw new HttpException('User is already blocked', HttpStatus.UNAUTHORIZED)
             }
 
+            // Get user details by ID
             const user: any = await this.userService.getUserById(blockUserId, metaInfo);
             if (!user) {
                 throw new HttpException('User not found', HttpStatus.NOT_FOUND)
             }
 
+            // Block user
             await this.blockService.blockUser(blockUserId, metaInfo.id, user?.name, user?.surname, user?.username);
 
             return {
@@ -44,21 +49,25 @@ export class BlockController {
         }
     }
 
+    // API to unblock user
     @Post("unblock/id/:id")
     async unBlockUser(
         @Headers("metaInfo") metaInfo: any,
         @Param("id") unBlockUserId: string
     ) {
         try {
+            // Check if user is trying to unblock self
             if(unBlockUserId === metaInfo.id) {
                 throw new HttpException("Cannot unblock self", HttpStatus.UNAUTHORIZED)
             }
 
+            // Check if user is already unblocked
             const blockedUser = await this.blockService.getBlockedUserById(unBlockUserId, metaInfo.id);
             if (!blockedUser) {
                 throw new HttpException('User is not blocked', HttpStatus.UNAUTHORIZED)
             }
 
+            // Unblock user
             await this.blockService.unBlockUser(unBlockUserId, metaInfo.id);
 
             return {

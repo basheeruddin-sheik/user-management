@@ -32,6 +32,7 @@ export class BlockService {
 
     async getBlockedUsers(blockedByUserId: string, userIds: string[]) {
 
+        // Get Blocked by user and other users blocked current user
         const blockedUsers = await this.mongoService.getBlockedUsersCollection().aggregate([
             {
                 $facet: {

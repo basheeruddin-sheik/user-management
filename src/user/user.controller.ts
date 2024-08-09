@@ -15,14 +15,18 @@ export class UserController {
         private blockService: BlockService
     ) { }
 
+    // API to create user
     @Post("create")
     @UsePipes(new UserPipe(createUserSchema))
     async create(@Body() userInfo: CreateUserDto) {
         try {
+            // Check if username already exists
             const isUsernameAvailable = await this.userService.getUserByUsername(userInfo.username);
             if (isUsernameAvailable) {
                 throw new HttpException("Username already exists", HttpStatus.BAD_REQUEST);
             }
+
+            // Create user
             const result = await this.userService.createUser(userInfo);
 
             return {
@@ -38,18 +42,22 @@ export class UserController {
         }
     }
 
+    // API to get user by ID
     @Get("get/id/:id")
     async getUser(
         @Headers("metainfo") metaInfo: any,
         @Param("id") id: string
     ) {
         try {
+
+            // If cache is enabled, check if data is present in cache
             const cacheKey = `get_${id}_by_${metaInfo?.id}`;
             const cachedData = await this.cacheManager.get(cacheKey);
             if (cachedData) {
                 return cachedData;
             }
 
+            // Get user by ID
             const user = await this.userService.getUserById(id, metaInfo);
             if (!user) {
                 throw new HttpException("User not found", HttpStatus.NOT_FOUND);
@@ -71,6 +79,7 @@ export class UserController {
         }
     }
 
+    // API to search users
     @Get("search")
     async searchUsers(
         @Headers("metainfo") metaInfo: any,
@@ -79,20 +88,29 @@ export class UserController {
         @Query("maxAge") maxAge: number,
     ) {
         try {
+            // If cache is enabled, check if data is present in cache
             const cacheKey = `search_users_by_${metaInfo?.id}_${username}_${minAge}_${maxAge}`;
             const cachedData = await this.cacheManager.get(cacheKey);
             if (cachedData) {
                 return cachedData;
             }
 
+            // Check if atleast one parameter is provided
             if(!username && !minAge && !maxAge) {
                 throw new HttpException("Atleast one parameter is required(username, minAge, maxAge)", HttpStatus.BAD_REQUEST);
             }
+
+
+            // Get users based on search criteria
             const users = await this.userService.searchUsers(username, +minAge, +maxAge, metaInfo.id);
 
+            // Map user ids
             let userIds = users.map((user: any) => user.id);
+
+            // Get blocked users
             const blockedUserIds = await this.blockService.getBlockedUsers(metaInfo.id, userIds);
 
+            // Filter out response userd excluding blocked users
             const blockedUserIdsSet = new Set(blockedUserIds);
             const res_users =  users.filter((obj: any) => !blockedUserIdsSet.has(obj.id));
 
@@ -113,6 +131,7 @@ export class UserController {
         }
     }
 
+    // API to update user
     @Put("update/id/:id")
     async updateUser(
         @Headers("metainfo") metaInfo: any,
@@ -120,20 +139,24 @@ export class UserController {
         @Param('id') id: string,
     ) {
         try {
+            // Check if user is authorized to update
             if (metaInfo?.id !== id) {
                 throw new HttpException("Unauthorized to Updated", HttpStatus.UNAUTHORIZED);
             }
 
+            // Get user by ID
             const user: any = await this.userService.getUserById(id, metaInfo);
             if (!user) {
                 throw new HttpException("User not found", HttpStatus.NOT_FOUND);
             }
 
+            // Check if username already exists
             const isUsernameAvailable = await this.userService.getUserByUsername(userInfo.username);
             if (isUsernameAvailable && isUsernameAvailable.username !== user.username) {
                 throw new HttpException("Username already exists", HttpStatus.BAD_REQUEST);
             }
 
+            // Update user
             const result = await this.userService.updateUserById(id, userInfo);
 
             return {
@@ -150,21 +173,25 @@ export class UserController {
         }
     }
 
+    // API to delete user
     @Delete("delete/id/:id")
     async deleteUser(
         @Headers("metainfo") metaInfo: any,
         @Param('id') id: string,
     ) {
         try {
+            // Check if user is authorized to delete
             if (metaInfo?.id !== id) {
                 throw new HttpException("Unauthorized to Delete", HttpStatus.UNAUTHORIZED);
             }
 
+            // Get user by ID
             const user = await this.userService.getUserById(id, metaInfo);
             if (!user) {
                 throw new HttpException("User not found", HttpStatus.NOT_FOUND);
             }
 
+            // Delete user
             await this.userService.deleteUserById(id);
 
             return {

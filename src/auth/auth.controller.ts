@@ -7,6 +7,7 @@ export class AuthController {
         private authService: AuthService,
     ) {}
 
+    // Generate token API
     @Post('token')
     async generateToken(@Body() body: any) {
         try {

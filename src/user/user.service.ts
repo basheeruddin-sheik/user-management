@@ -18,13 +18,15 @@ export class UserService {
 
     async getUserById(id: string, metaInfo: any) {
         let projection: any;
+
+        // If user is trying to get self, return all details
         if (metaInfo?.id === id) {
             projection = { 
                 _id: 0,
                 password: 0
             };
         }
-        else {
+        else { // Else return only public details
             projection = {
                 _id: 0,
                 name: 1,
@@ -34,8 +36,7 @@ export class UserService {
             };
         }
 
-        const data = await this.mongoService.getUsersCollection().findOne({ id, isDeleted: { $ne: true } }, { projection });
-        return data;
+        return await this.mongoService.getUsersCollection().findOne({ id, isDeleted: { $ne: true } }, { projection });
     }
 
     async createUser(userInfo: any) {
@@ -51,6 +52,7 @@ export class UserService {
     }
 
     async updateUserById(id: string, userInfo: any) {
+        // Update user details
         userInfo.birthdate = moment(userInfo.birthdate).unix();
         if (userInfo.password) {
             userInfo.password = crypto.createHash('sha256').update(userInfo.password).digest('hex');
@@ -68,24 +70,26 @@ export class UserService {
 
     async searchUsers(username: string, minAge: number, maxAge: number, id: string) {
         let query: any = { isDeleted: { $ne: true }, id: { $ne: id } };
+
+        // If username is provided, search by username
         if (username) {
             query.username = new RegExp(username, "i");
         }
 
+        // If minAge and maxAge are provided, search by age range
         if (minAge && maxAge) {
             query.birthdate = {
                 $lte: moment().subtract(minAge, 'years').unix(),
                 $gte: moment().subtract(maxAge, 'years').unix()
             };
         }
-        else if (minAge) {
+        else if (minAge) { // If only minAge is provided, search users older than minAge
             query.birthdate = { $lte: moment().subtract(minAge, 'years').unix() };
         }
-        else if (maxAge) {
+        else if (maxAge) { // If only maxAge is provided, search users younger than maxAge
             query.birthdate = { $gte: moment().subtract(maxAge, 'years').unix() };
         }
 
-        // console.log(query);
         return await this.mongoService.getUsersCollection().find(query, { projection: { _id: 0, id: 1, name: 1, surname: 1, username: 1, birthdate: 1 } }).limit(15).toArray();
     }
 }

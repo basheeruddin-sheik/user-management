@@ -10,6 +10,8 @@ export class MongoService {
 
     async onModuleInit(): Promise<void> {
         try {
+
+            // Connect to MongoDB
             let mongoClient: MongoClient = await MongoClient.connect(process.env.MONGO_URL);
             this.userManagementDb = mongoClient.db("user-management");
 
@@ -30,6 +32,7 @@ export class MongoService {
     }
 
     async createIndexes() {
+        // Create indexes
         try {
             await Promise.all([
                 this.getUsersCollection().createIndex({ username: "text" }, { unique: true }),

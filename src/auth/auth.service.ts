@@ -5,6 +5,8 @@ import * as jwt from "jsonwebtoken";
 export class AuthService {
 
     async generateToken(body: any) {
+
+        // Generate token
         return await jwt.sign({
             ...body
         }, process.env.JWT_SECRET, { 
