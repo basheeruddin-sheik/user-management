@@ -1,7 +1,9 @@
 import { Controller, Headers, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { BlockService } from './block.service';
 import { UserService } from '../user/user.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class BlockController {
 
@@ -11,7 +13,7 @@ export class BlockController {
     ) { }
 
     // API to block user
-    @Post("block/id/:id")
+    @Post("block/:id")
     async blockUser(
         @Headers("metaInfo") metaInfo: any,
         @Param("id") blockUserId: string
@@ -50,7 +52,7 @@ export class BlockController {
     }
 
     // API to unblock user
-    @Post("unblock/id/:id")
+    @Post("unblock/:id")
     async unBlockUser(
         @Headers("metaInfo") metaInfo: any,
         @Param("id") unBlockUserId: string

@@ -1,73 +1,85 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# User Management Microservice
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This NestJS microservice provides a set of APIs for managing users, including CRUD operations, searching, and blocking functionality.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
+* CRUD operations for user data (Create, Read, Update, Delete)
+* Search users by username and/or age range
+* Block and unblock users
+* Caching for frequently accessed data
 
-## Description
+## Technologies
+* NestJS: JavaScript framework for building scalable microservices
+* Database: MongoDB
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Dependecies
+* mongodb
+* moment (Time format)
+* jsonwebtoken (Authentication)
+* uuid (Universal Unique ID)
+* cache-manager (Caching)
+* swagger (API Documentation)
+* zod (Request validation)
+
 
 ## Installation
+1. Clone this repository:
+   ```
+   git clone <git_repository_url>
+   ```
+2. Install dependencies:
+    ```
+    npm install
+    ```
+3. Run Service
+    ```
+    npm run start:dev
+    ```
 
-```bash
-$ npm install
-```
+## API Endpoints
+1. UserController
+    * ```/users/create - POST``` Create a new user
+    * ```/users/getById/:id - GET``` Get a User by ID
+    * ```/users/search - GET``` Search for users by username and/or age range
+    * ```/users/:id - UPDATE``` Update a user by ID
+    * ```/users/:id - DELETE``` Delete a user by ID
 
-## Running the app
+2. BlockController
+    * ```/users/block/:id``` Block a user
+    * ```/users/unblock/:id``` Unblock a user
 
-```bash
-# development
-$ npm run start
+3. AuthController
+    * ```/auth/token - POST``` Get Token By User ID
 
-# watch mode
-$ npm run start:dev
+### Note: 
+* Refere ```Swagger API Documention``` at route: ```{{domain}}/api```
+* Download Postman Collection URL: [Postman Collection](https://google.com)
 
-# production mode
-$ npm run start:prod
-```
+## Implementation
+#### 1. Authentication & Authorization
+* Implemented an API endpoint for generating JSON Web Tokens (JWTs) to authenticate & authorize users.
+* Created an authorization layer by setting a middleware to protect API access.
 
-## Test
+#### 2. Request Validation(Pipes)
+* Implemented robust input validation for API requests using Zod schemas within NestJS pipes.
 
-```bash
-# unit tests
-$ npm run test
+#### 3. Data Model
+- ##### Public Information (Can be retrieved by anyone)
+    * ```id - UUID``` Unique ID
+    * ```name - String``` Name of the User
+    * ```surname - String``` Surname of the User
+    * ```username - String``` Username of the User
+    * ```birthdate - Number(Epoch)``` User's Date of Birth
 
-# e2e tests
-$ npm run test:e2e
+- ##### Private Information (Self retrieval)
+    * ```password - String(Hash)``` User's Password
+    * ```preferredLanguages - Array of String``` User selected languages
+    * ```passwordLastUpdated - Number(Epoch)``` When was the password recently updated
+    * ```themePreference - String``` Dark/Light
+    * ```metaInfo - Object``` 
+        * ```createdAt - Number``` When was the User created
+        * ```updatedAt - Number``` When was the User recently updated
+        * ```deletedAt - Number``` When was the User deleted
+    * ```isDeleted - Boolean``` To indicate account is deleted or not(For soft delete)
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+#### 4. Mongo Collections

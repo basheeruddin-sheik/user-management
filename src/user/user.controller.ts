@@ -5,8 +5,10 @@ import { UserService } from './user.service';
 import { BlockService } from '../block/block.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { ApiTags } from '@nestjs/swagger';
 
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
     constructor(
@@ -43,7 +45,7 @@ export class UserController {
     }
 
     // API to get user by ID
-    @Get("get/id/:id")
+    @Get("getById/:id")
     async getUser(
         @Headers("metainfo") metaInfo: any,
         @Param("id") id: string
@@ -132,7 +134,7 @@ export class UserController {
     }
 
     // API to update user
-    @Put("update/id/:id")
+    @Put(":id")
     async updateUser(
         @Headers("metainfo") metaInfo: any,
         @Body(new UserPipe(updateUserSchema)) userInfo: UpdateUserDto,
@@ -174,7 +176,7 @@ export class UserController {
     }
 
     // API to delete user
-    @Delete("delete/id/:id")
+    @Delete(":id")
     async deleteUser(
         @Headers("metainfo") metaInfo: any,
         @Param('id') id: string,
