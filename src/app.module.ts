@@ -9,9 +9,15 @@ import { MongoService } from './database/mongo.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './auth/auth.middleware';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [],
+  imports: [
+    CacheModule.register({
+      isGlobal: true, // Make the cache available globally
+      max: +process.env.CACHE_MAX_ITEMS || 1000, // maximum number of items in cache
+    }),
+  ],
   controllers: [
     AppController, 
     UserController, 

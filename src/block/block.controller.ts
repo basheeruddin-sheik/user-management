@@ -25,7 +25,7 @@ export class BlockController {
                 throw new HttpException('User is already blocked', HttpStatus.UNAUTHORIZED)
             }
 
-            const user = await this.userService.getUserById(blockUserId, metaInfo);
+            const user: any = await this.userService.getUserById(blockUserId, metaInfo);
             if (!user) {
                 throw new HttpException('User not found', HttpStatus.NOT_FOUND)
             }

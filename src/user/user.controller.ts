@@ -1,12 +1,16 @@
-import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Inject, Param, ParseUUIDPipe, Post, Put, Query, UsePipes } from '@nestjs/common';
 import { UserPipe } from '../pipes/user.pipe';
 import { CreateUserDto, createUserSchema, UpdateUserDto, updateUserSchema } from '../dto/user.dto';
 import { UserService } from './user.service';
 import { BlockService } from '../block/block.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+
 
 @Controller('users')
 export class UserController {
     constructor(
+        @Inject(CACHE_MANAGER) private cacheManager: Cache,
         private userService: UserService,
         private blockService: BlockService
     ) { }
@@ -40,10 +44,19 @@ export class UserController {
         @Param("id") id: string
     ) {
         try {
+            const cacheKey = `get_${id}_by_${metaInfo?.id}`;
+            const cachedData = await this.cacheManager.get(cacheKey);
+            if (cachedData) {
+                return cachedData;
+            }
+
             const user = await this.userService.getUserById(id, metaInfo);
             if (!user) {
                 throw new HttpException("User not found", HttpStatus.NOT_FOUND);
             }
+
+            // Store data in cache
+            await this.cacheManager.set(cacheKey, user, +process.env.CACHE_TTL);
 
             return {
                 message: 'User Details',
@@ -66,6 +79,12 @@ export class UserController {
         @Query("maxAge") maxAge: number,
     ) {
         try {
+            const cacheKey = `search_users_by_${metaInfo?.id}_${username}_${minAge}_${maxAge}`;
+            const cachedData = await this.cacheManager.get(cacheKey);
+            if (cachedData) {
+                return cachedData;
+            }
+
             if(!username && !minAge && !maxAge) {
                 throw new HttpException("Atleast one parameter is required(username, minAge, maxAge)", HttpStatus.BAD_REQUEST);
             }
@@ -76,6 +95,9 @@ export class UserController {
 
             const blockedUserIdsSet = new Set(blockedUserIds);
             const res_users =  users.filter((obj: any) => !blockedUserIdsSet.has(obj.id));
+
+            // Store data in cache
+            await this.cacheManager.set(cacheKey, res_users, +process.env.CACHE_TTL);
             
             return {
                 message: 'User Details',
@@ -102,7 +124,7 @@ export class UserController {
                 throw new HttpException("Unauthorized to Updated", HttpStatus.UNAUTHORIZED);
             }
 
-            const user = await this.userService.getUserById(id, metaInfo);
+            const user: any = await this.userService.getUserById(id, metaInfo);
             if (!user) {
                 throw new HttpException("User not found", HttpStatus.NOT_FOUND);
             }
