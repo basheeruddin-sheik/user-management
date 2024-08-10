@@ -98,11 +98,11 @@ This NestJS microservice provides a set of APIs for managing users, including CR
     * #### There are two ways to keep track of blocked users:
         1. **Store blocked user IDs directly within each user's document**: This means each user has a list of IDs of users they've blocked. However, if a user blocks many people, this list can become very long, making the user document too large.
         2. **Create a separate collection for blocked user relationships**: Here, each document stores information about two users: the blocker and the blocked user. This approach is better for handling a large number of blocked users as it prevents individual user documents from becoming too big.
-        * I chose the second method because it can handle a large number of blocked users without causing performance issues.
+        * **I chose the second method because it can handle a large number of blocked users without causing performance issues.**
     * #### When fetching blocked user details, there are two primary approaches:
         1. **Aggregation Lookups**: This method involves joining the ```blocked-users``` collection with the ```users``` collection to retrieve additional user information. While versatile, it can impact performance, especially for large datasets.
         2. **Data Redundancy**: Storing essential user data (name, surname, username) within the ```blocked-users``` collection can eliminate the need for subsequent lookups, improving performance. However, this approach introduces data redundancy and potential inconsistencies if not managed carefully.
-        * The optimal strategy depends on factors such as dataset size, query frequency, and data consistency requirements.
+        * **The optimal strategy depends on factors such as dataset size, query frequency, and data consistency requirements.**
 
 #### 5. Caching
 * In-memory caching was selected due to its immediate accessibility and reduced setup overhead compared to alternatives like Redis or file-based caching.
