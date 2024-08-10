@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MongoService } from '../database/mongo.service';
 import * as moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class BlockService {
@@ -10,14 +9,10 @@ export class BlockService {
         private mongoService: MongoService
     ) { }
 
-    async blockUser(blockedUserId: string, blockedByUserId: string, blockedUserName: string, blockedUserSurname: string, blockedUserUsername: string) {
+    async blockUser(blockedUserId: string, blockedByUserId: string) {
         return await this.mongoService.getBlockedUsersCollection().insertOne({
-            id: uuidv4(),
             blockedByUserId,
             blockedUserId,
-            blockedUserName,
-            blockedUserSurname,
-            blockedUserUsername,
             blockedAt: moment().unix()
         });
     }

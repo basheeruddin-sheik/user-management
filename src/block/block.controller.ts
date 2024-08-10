@@ -37,7 +37,7 @@ export class BlockController {
             }
 
             // Block user
-            await this.blockService.blockUser(blockUserId, metaInfo.id, user?.name, user?.surname, user?.username);
+            await this.blockService.blockUser(blockUserId, metaInfo.id);
 
             return {
                 message: 'User blocked successfully',
